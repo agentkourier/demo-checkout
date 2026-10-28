@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: checkout
+  description: Confirms orders once payments has authorized them.
+  annotations:
+    github.com/project-slug: agentkourier/demo-checkout
+spec:
+  type: service
+  lifecycle: production
+  owner: group:checkout
+  system: commerce
+  consumesApis:
+    - payments-api
