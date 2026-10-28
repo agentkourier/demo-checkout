@@ -11,6 +11,8 @@ import (
 	"sync/atomic"
 	"testing"
 
+	"github.com/prometheus/client_golang/prometheus"
+
 	"github.com/agentkourier/demo-checkout/client"
 )
 
@@ -114,5 +116,5 @@ func TestCheckout(t *testing.T) {
 func newTestRouter(logs *bytes.Buffer, payments authorizer) http.Handler {
 	var ready atomic.Bool
 	ready.Store(true)
-	return newRouter(slog.New(slog.NewJSONHandler(logs, nil)), payments, &ready)
+	return newRouter(slog.New(slog.NewJSONHandler(logs, nil)), prometheus.NewRegistry(), payments, &ready)
 }

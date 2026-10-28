@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"regexp"
 
+	"github.com/prometheus/client_golang/prometheus"
+
 	"github.com/agentkourier/demo-checkout/client"
 )
 
@@ -47,6 +49,8 @@ type authorizer interface {
 type checkoutHandler struct {
 	logger   *slog.Logger
 	payments authorizer
+	// outcomes counts Authorize calls by client.Outcome.
+	outcomes *prometheus.CounterVec
 }
 
 func (h *checkoutHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -69,6 +73,7 @@ func (h *checkoutHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		AmountCents: req.AmountCents,
 		Currency:    req.Currency,
 	})
+	h.outcomes.WithLabelValues(client.Outcome(err)).Inc()
 	if err != nil {
 		h.logger.ErrorContext(ctx, "payment authorization failed",
 			"order_id", req.OrderID, "error", err.Error())
