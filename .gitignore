@@ -1,0 +1,4 @@
+/bin/
+/checkout
+*.test
+*.out
